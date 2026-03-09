@@ -1,0 +1,10 @@
+{
+  "name": "world-model-validation-talk",
+  "version": "1.0.0",
+  "scripts": {
+    "check": "node check-overflow.js"
+  },
+  "devDependencies": {
+    "puppeteer": "^21.0.0"
+  }
+}

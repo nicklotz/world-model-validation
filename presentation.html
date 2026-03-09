@@ -1,0 +1,831 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Debugging the Future: Strategies for Validating World Models • Voxel51</title>
+
+  <!-- Reveal.js (CDN) -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reveal.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/theme/night.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/plugin/highlight/monokai.css" />
+
+  <style>
+    /* Minimal overrides for night theme */
+    .reveal .slides{ text-align: left; }
+
+    /* Text sizing */
+    .reveal h1{ font-size: 1.8em; }
+    .reveal h2{ font-size: 1.1em; }
+    .reveal h3{ font-size: 0.9em; }
+
+    .reveal p{ line-height: 1.4; }
+    .reveal li{ line-height: 1.4; margin: 0.25em 0; }
+
+    .accent { color: #FF6D04; }
+    .muted { opacity: 0.7; }
+    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; }
+
+    /* Wrap long tokens */
+    .reveal a, .reveal .mono, .reveal p, .reveal li{
+      overflow-wrap: anywhere;
+      word-break: break-word;
+    }
+
+    /* Components */
+    .card{
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 8px;
+      padding: 16px 18px;
+    }
+
+    .grid2{
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      align-items: start;
+    }
+    .grid3{
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 12px;
+      align-items: stretch;
+    }
+    .grid2 > *, .grid3 > * { min-width: 0; }
+
+    .kpi{
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 8px;
+      padding: 16px;
+    }
+    .kpi .big{
+      font-size: 1.6em;
+      font-weight: 700;
+      margin: 0;
+    }
+    .kpi .label{
+      margin-top: 6px;
+      opacity: 0.7;
+      font-size: 0.9em;
+    }
+
+    table.vx{
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85em;
+    }
+    table.vx th, table.vx td{
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      padding: 8px;
+      vertical-align: top;
+    }
+    table.vx th{ font-weight: 600; }
+    table.vx td{ opacity: 0.85; }
+
+    pre code{
+      border-radius: 8px !important;
+      padding: 12px 14px !important;
+      font-size: 0.75em !important;
+      line-height: 1.3 !important;
+    }
+
+    .chapter{
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+      margin-bottom: 8px;
+    }
+    .pill{
+      font-size: 0.7em;
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.2);
+      opacity: 0.8;
+      background: rgba(255,255,255,0.05);
+    }
+    .pill.orange{ border-color: #FF6D04; }
+    .pill.blue{ border-color: #6ca0dc; }
+    .pill.purple{ border-color: #b294bb; }
+    .pill.green{ border-color: #8abeb7; }
+
+    .diagram{
+      border: 1px solid rgba(255,255,255,0.1);
+      background: rgba(255,255,255,0.03);
+      border-radius: 8px;
+      padding: 12px;
+    }
+    .arrow-row{
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      font-size: 0.85em;
+    }
+    .node{
+      padding: 8px 10px;
+      border-radius: 8px;
+      border: 1px solid rgba(255,255,255,0.15);
+      background: rgba(255,255,255,0.05);
+    }
+    .arrow{ opacity: 0.5; font-size: 1.1em; }
+    .node .tag{
+      display: block;
+      margin-top: 4px;
+      font-size: 0.75em;
+      opacity: 0.6;
+    }
+
+    .title-sub{
+      font-size: 0.62em;
+      max-width: 80ch;
+      margin-top: 0.2em;
+    }
+
+    .title-img{
+      display: block;
+      margin: 0.3em auto 0 auto;
+      height: 312px !important;
+      width: auto !important;
+      border-radius: 6px;
+      border: 1px solid rgba(255,255,255,0.15);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+    }
+
+    /* Title slide spacing */
+    .reveal h1{ margin-bottom: 0.2em; }
+    .chapter{ margin-bottom: 0.5em; }
+
+    /* Navigation arrows */
+    .reveal .controls button{ color: #FF6D04; }
+    .reveal .controls button:hover{ color: #ff8533; }
+
+    /* Progress bar */
+    .reveal .progress span{ background: #FF6D04; }
+
+    /* ── New additions ─────────────────────────── */
+
+    /* Image placeholder */
+    .img-placeholder{
+      border: 2px dashed rgba(255,255,255,0.25);
+      border-radius: 8px;
+      padding: 24px 16px;
+      text-align: center;
+      color: rgba(255,255,255,0.45);
+      font-size: 0.75em;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 120px;
+    }
+
+    /* Red pill for red-teaming section */
+    .pill.red{ border-color: #cc6666; }
+
+    /* Timeline bar for agenda */
+    .timeline{
+      display: flex;
+      width: 100%;
+      height: 18px;
+      border-radius: 4px;
+      overflow: hidden;
+      margin-top: 12px;
+      font-size: 0;
+    }
+    .timeline .seg{
+      display: inline-block;
+      height: 100%;
+      font-size: 0.55rem;
+      line-height: 18px;
+      text-align: center;
+      color: rgba(255,255,255,0.8);
+      white-space: nowrap;
+      overflow: hidden;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="reveal">
+    <img src="assets/voxel51-logo.png" alt="Voxel51" style="position: fixed; top: 20px; right: 20px; height: 40px; z-index: 100; opacity: 0.9;">
+    <div class="slides">
+
+      <!-- ============================================================
+           SLIDE 1 — TITLE
+      ============================================================= -->
+      <section>
+        <h1>
+          Debugging<br/>
+          <span class="accent">the Future</span>
+        </h1>
+
+        <p class="muted title-sub">
+          Strategies for validating <span class="accent">world models</span> and action-conditioned video.
+          How do you debug a model that <em>imagines</em> the future?
+        </p>
+
+        <div style="display: flex; justify-content: center; gap: 20px; width: 100%; margin-top: 16px;">
+          <div class="img-placeholder" style="width: 45%; min-height: 200px;">
+            [World model generation example — predicted video frame]
+          </div>
+          <div class="img-placeholder" style="width: 45%; min-height: 200px;">
+            [FiftyOne App — video validation dashboard]
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================
+           SLIDE 2 — AGENDA
+      ============================================================= -->
+      <section>
+        <h2>Agenda</h2>
+        <div class="card" style="font-size: 0.88em;">
+          <ul>
+            <li><span class="accent">The Landscape:</span> World models &amp; the validation crisis</li>
+            <li><span class="accent">Taming the Data Monster:</span> Query, curate, and visualize at scale</li>
+            <li><span class="accent">Validating World Models:</span> Beyond FID — physics, drift, pipelines</li>
+            <li><span class="accent">Curating for Causality:</span> Rare events, causal annotation, fine-tuning</li>
+            <li><span class="accent">Collaborative Red-Teaming:</span> Adversarial probes for world models</li>
+            <li><span class="accent">Q&amp;A</span> + resources</li>
+          </ul>
+        </div>
+
+        <div class="timeline">
+          <div class="seg" style="flex: 10; background: #FF6D04;">Landscape</div>
+          <div class="seg" style="flex: 10; background: #6ca0dc;">Data</div>
+          <div class="seg" style="flex: 14; background: #b294bb;">Validate</div>
+          <div class="seg" style="flex: 12; background: #8abeb7;">Causality</div>
+          <div class="seg" style="flex: 10; background: #cc6666;">Red-Team</div>
+          <div class="seg" style="flex: 4; background: rgba(255,255,255,0.15);">Q&amp;A</div>
+        </div>
+      </section>
+
+      <!-- ============================================================
+           SECTION 1 — THE LANDSCAPE  (Slides 3–5)
+      ============================================================= -->
+      <section>
+        <div class="chapter">
+          <h2>The world model moment</h2>
+          <span class="pill orange">The Landscape</span>
+        </div>
+        <div class="grid2">
+          <div>
+            <div class="kpi">
+              <p class="big"><span class="accent">$4.5B+</span></p>
+              <div class="label">invested in video generation &amp; world models (2024–2025)</div>
+            </div>
+            <div class="kpi" style="margin-top: 12px;">
+              <p class="big"><span class="accent">Sora → Cosmos → Genie 2</span></p>
+              <div class="label">major releases in under 18 months</div>
+            </div>
+          </div>
+          <div>
+            <p style="font-size: 0.75em;">
+              World models learn to <span class="accent">simulate</span> environments — predicting future frames given actions.
+              They promise training embodied agents, AV simulation, and content creation.
+            </p>
+            <p class="muted" style="font-size: 0.7em; margin-top: 10px;">
+              But generating plausible-looking video is not the same as generating <em>physically correct</em> video.
+              The gap between visual fidelity and physical fidelity is where validation matters.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <div class="chapter">
+          <h2>What are action-conditioned video models?</h2>
+          <span class="pill orange">The Landscape</span>
+        </div>
+
+        <div class="diagram" style="font-size: 0.85em;">
+          <div class="arrow-row">
+            <div class="node">Current Frame(s)<span class="tag">observation</span></div>
+            <div class="arrow">+</div>
+            <div class="node">Action<span class="tag">steer left, brake</span></div>
+            <div class="arrow">→</div>
+            <div class="node">World Model<span class="tag">transformer / diffusion</span></div>
+            <div class="arrow">→</div>
+            <div class="node">Predicted Future<span class="tag">next N frames</span></div>
+          </div>
+        </div>
+
+        <div class="img-placeholder" style="margin-top: 16px; min-height: 180px;">
+          [Diagram: input frames + action → model → predicted video sequence]
+        </div>
+
+        <p class="muted" style="font-size: 0.7em; margin-top: 12px;">
+          Unlike unconditional video generation, these models are <span class="accent">steerable</span> — the action input
+          means predictions must respect causal physics, not just visual plausibility.
+        </p>
+      </section>
+
+      <section>
+        <div class="chapter">
+          <h2>The validation crisis</h2>
+          <span class="pill orange">The Landscape</span>
+        </div>
+        <div class="grid2">
+          <div class="card">
+            <h3>What we can measure today</h3>
+            <ul style="font-size: 0.75em;">
+              <li>FID / FVD — distributional similarity</li>
+              <li>LPIPS — perceptual distance</li>
+              <li>CLIP score — semantic alignment</li>
+            </ul>
+            <p class="muted" style="font-size: 0.7em; margin-top: 8px;">
+              These tell us the <em>look</em> is right. They say nothing about whether <span class="accent">physics</span> is right.
+            </p>
+          </div>
+          <div class="img-placeholder" style="min-height: 200px;">
+            [Side-by-side: visually plausible but physically wrong generation vs. ground truth]
+          </div>
+        </div>
+        <p class="muted" style="font-size: 0.72em; margin-top: 14px;">
+          A car that floats through a wall scores well on FID. We need <span class="accent">task-specific, physics-aware</span> validation.
+        </p>
+      </section>
+
+      <!-- ============================================================
+           SECTION 2 — TAMING THE DATA MONSTER  (Slides 6–8)
+      ============================================================= -->
+      <section>
+        <div class="chapter">
+          <h2>The scale problem</h2>
+          <span class="pill blue">Taming the Data Monster</span>
+        </div>
+        <div class="grid3">
+          <div class="kpi">
+            <p class="big"><span class="accent">10B+</span></p>
+            <div class="label">frames in modern driving datasets</div>
+          </div>
+          <div class="kpi">
+            <p class="big"><span class="accent">100+ PB</span></p>
+            <div class="label">raw video across AV fleets</div>
+          </div>
+          <div class="kpi">
+            <p class="big"><span class="accent">&lt;0.01%</span></p>
+            <div class="label">of frames contain the rare events that matter most</div>
+          </div>
+        </div>
+        <p class="muted" style="font-size: 0.72em; margin-top: 16px;">
+          You can't validate what you can't find. The first challenge is <span class="accent">navigating</span> massive video
+          corpora to surface the scenarios that expose world model failures.
+        </p>
+      </section>
+
+      <section>
+        <div class="chapter">
+          <h2>Query without transfer</h2>
+          <span class="pill blue">Taming the Data Monster</span>
+        </div>
+        <div class="grid2">
+          <div>
+            <table class="vx" style="font-size: 0.78em;">
+              <thead><tr><th>Approach</th><th>Trade-off</th></tr></thead>
+              <tbody>
+                <tr><td>Download &amp; index locally</td><td>Weeks of transfer, PB storage</td></tr>
+                <tr><td>Cloud-native query</td><td>Query in place, stream slices</td></tr>
+                <tr><td>Embedding index</td><td>Semantic search without pixels</td></tr>
+              </tbody>
+            </table>
+            <pre style="margin-top: 12px;"><code class="language-python" style="font-size: 0.65em;">import fiftyone as fo
+
+# Query a remote dataset without downloading everything
+dataset = fo.load_dataset("av-fleet-2025")
+view = (dataset
+    .match(F("weather") == "rain")
+    .filter_labels("detections", F("label") == "pedestrian")
+    .limit(1000)
+)
+session = fo.launch_app(view)</code></pre>
+          </div>
+          <div class="img-placeholder" style="min-height: 280px;">
+            [FiftyOne App showing filtered query results from large-scale video dataset]
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <div class="chapter">
+          <h2>Visualizing billion-scale video</h2>
+          <span class="pill blue">Taming the Data Monster</span>
+        </div>
+        <div class="grid2">
+          <div class="img-placeholder" style="min-height: 260px;">
+            [Embedding visualization — clusters of driving scenarios colored by scene type]
+          </div>
+          <div class="img-placeholder" style="min-height: 260px;">
+            [Zoomed embedding cluster — rare near-miss events highlighted]
+          </div>
+        </div>
+        <p class="muted" style="font-size: 0.72em; margin-top: 14px;">
+          Compute embeddings once, explore interactively forever. Embeddings turn video corpora into
+          <span class="accent">navigable maps</span> where failure-relevant scenarios cluster together.
+        </p>
+      </section>
+
+      <!-- ============================================================
+           SECTION 3 — VALIDATING WORLD MODELS  (Slides 9–13)
+      ============================================================= -->
+      <section>
+        <div class="chapter">
+          <h2>Beyond FID: what metrics miss</h2>
+          <span class="pill purple">Validating World Models</span>
+        </div>
+        <div class="grid2" style="font-size: 0.8em;">
+          <div class="card">
+            <h3>What appearance metrics measure</h3>
+            <ul style="font-size: 0.85em;">
+              <li>Texture quality &amp; sharpness</li>
+              <li>Color distribution fidelity</li>
+              <li>Semantic layout similarity</li>
+            </ul>
+            <p class="muted" style="font-size: 0.8em; margin-top: 8px;">Good at: "does it look real?"</p>
+          </div>
+          <div class="card">
+            <h3>What we actually need</h3>
+            <ul style="font-size: 0.85em;">
+              <li><span class="accent">Object permanence</span> — do things persist correctly?</li>
+              <li><span class="accent">Gravity &amp; collisions</span> — do physics constraints hold?</li>
+              <li><span class="accent">Action fidelity</span> — does "turn left" actually turn left?</li>
+              <li><span class="accent">Temporal coherence</span> — do objects track consistently?</li>
+            </ul>
+            <p class="muted" style="font-size: 0.8em; margin-top: 8px;">Good at: "does it <em>work</em> right?"</p>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <div class="chapter">
+          <h2>Detecting physics hallucinations</h2>
+          <span class="pill purple">Validating World Models</span>
+        </div>
+        <div class="card" style="font-size: 0.78em;">
+          <h3>Detection strategies</h3>
+          <ul>
+            <li><span class="accent">Object tracking consistency:</span> Run a tracker on generated video — do detections match across frames?</li>
+            <li><span class="accent">Depth estimation checks:</span> Monocular depth on generated frames — do depth orderings stay consistent?</li>
+            <li><span class="accent">Collision geometry:</span> Extract 3D bounding boxes — do objects overlap impossibly?</li>
+            <li><span class="accent">Motion magnitude:</span> Optical flow between frames — do velocities exceed physical limits?</li>
+          </ul>
+        </div>
+        <div class="img-placeholder" style="margin-top: 14px; min-height: 160px;">
+          [Generated video frame with overlaid physics violation heatmap — objects clipping through surfaces]
+        </div>
+      </section>
+
+      <section>
+        <div class="chapter">
+          <h2>Temporal drift in long-horizon generation</h2>
+          <span class="pill purple">Validating World Models</span>
+        </div>
+        <div class="diagram" style="font-size: 0.82em; margin-bottom: 14px;">
+          <div class="arrow-row">
+            <div class="node">t=0<span class="tag">grounded</span></div>
+            <div class="arrow">→</div>
+            <div class="node">t=10<span class="tag">minor drift</span></div>
+            <div class="arrow">→</div>
+            <div class="node">t=25<span class="tag">accumulating</span></div>
+            <div class="arrow">→</div>
+            <div class="node">t=50<span class="tag">hallucination</span></div>
+          </div>
+        </div>
+        <div class="grid2">
+          <div class="card" style="font-size: 0.75em;">
+            <h3>Measuring drift</h3>
+            <ul>
+              <li>Track <span class="accent">per-frame validation scores</span> over generation horizon</li>
+              <li>Plot physics violation rate vs. timestep</li>
+              <li>Identify the <span class="accent">drift horizon</span> — where does the model lose grounding?</li>
+            </ul>
+          </div>
+          <div class="img-placeholder" style="min-height: 160px;">
+            [Chart: validation score degradation over generation timesteps (t=0 to t=50)]
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <div class="chapter">
+          <h2>Building a validation pipeline</h2>
+          <span class="pill purple">Validating World Models</span>
+        </div>
+        <div class="diagram" style="font-size: 0.82em; margin-bottom: 14px;">
+          <div class="arrow-row">
+            <div class="node">Generate<span class="tag">world model</span></div>
+            <div class="arrow">→</div>
+            <div class="node">Detect Objects<span class="tag">tracker</span></div>
+            <div class="arrow">→</div>
+            <div class="node">Check Physics<span class="tag">constraints</span></div>
+            <div class="arrow">→</div>
+            <div class="node">Score<span class="tag">per-frame</span></div>
+            <div class="arrow">→</div>
+            <div class="node">Curate Failures<span class="tag">FiftyOne</span></div>
+          </div>
+        </div>
+        <pre><code class="language-python" style="font-size: 0.62em;">import fiftyone as fo
+import fiftyone.brain as fob
+
+# Load generated + ground-truth video pairs
+dataset = fo.Dataset.from_dir(dataset_dir, dataset_type=fo.types.VideoDirectory)
+
+# Run automated physics checks as custom fields
+for sample in dataset:
+    sample["physics_score"] = run_physics_validation(sample.filepath)
+    sample["drift_horizon"] = compute_drift_horizon(sample.filepath)
+    sample.save()
+
+# Surface worst failures for human review
+failures = dataset.sort_by("physics_score").limit(100)
+session = fo.launch_app(failures)</code></pre>
+      </section>
+
+      <section>
+        <div class="chapter">
+          <h2>Case study: AV scenario validation</h2>
+          <span class="pill purple">Validating World Models</span>
+        </div>
+        <table class="vx">
+          <thead><tr><th>Scenario</th><th>Tested</th><th>Physics Fail Rate</th><th>Key Issue</th></tr></thead>
+          <tbody>
+            <tr><td>Lane change</td><td>2,400</td><td class="accent">12%</td><td>Adjacent vehicle clipping</td></tr>
+            <tr><td>Unprotected left turn</td><td>1,800</td><td class="accent">23%</td><td>Oncoming car ignored</td></tr>
+            <tr><td>Pedestrian crossing</td><td>3,100</td><td class="accent">8%</td><td>Pedestrian teleportation</td></tr>
+            <tr><td>Emergency braking</td><td>950</td><td class="accent">31%</td><td>Rear vehicle passes through</td></tr>
+            <tr><td>Merge onto highway</td><td>1,600</td><td class="accent">18%</td><td>Speed inconsistency</td></tr>
+          </tbody>
+        </table>
+        <div class="img-placeholder" style="margin-top: 14px; min-height: 150px;">
+          [FiftyOne grid view showing tagged physics failures across AV scenario types]
+        </div>
+      </section>
+
+      <!-- ============================================================
+           SECTION 4 — CURATING FOR CAUSALITY  (Slides 14–17)
+      ============================================================= -->
+      <section>
+        <div class="chapter">
+          <h2>The rare-event problem</h2>
+          <span class="pill green">Curating for Causality</span>
+        </div>
+        <div class="grid2">
+          <div class="kpi">
+            <p class="big"><span class="accent">1 in 10,000</span></p>
+            <div class="label">frames contain a meaningful causal interaction (e.g., swerve → near-miss)</div>
+          </div>
+          <div class="card" style="font-size: 0.78em;">
+            <h3>Why this matters for world models</h3>
+            <ul>
+              <li>Models trained on <span class="accent">common scenarios</span> hallucinate on rare ones</li>
+              <li>Rare events are exactly where <span class="accent">safety-critical failures</span> occur</li>
+              <li>Random sampling almost never surfaces these cases</li>
+              <li>You need <span class="accent">targeted curation</span> to build causal training data</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <div class="chapter">
+          <h2>Finding action-reaction scenarios</h2>
+          <span class="pill green">Curating for Causality</span>
+        </div>
+        <div class="grid2" style="font-size: 0.8em;">
+          <div class="card">
+            <h3>Pattern mining</h3>
+            <ul style="font-size: 0.85em;">
+              <li>Define <span class="accent">causal templates:</span> action → consequence</li>
+              <li>Search by temporal co-occurrence of events</li>
+              <li>Cluster by embedding similarity to known causal pairs</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>Programmatic search</h3>
+            <pre><code class="language-python" style="font-size: 0.62em;">
+# Find braking events followed by
+# near-miss within 2 seconds
+causal = dataset.match(
+  F("events").contains(
+    {"action": "hard_brake",
+     "consequence": "near_miss",
+     "delta_t": {"$lt": 2.0}}
+  )
+)</code></pre>
+          </div>
+        </div>
+        <div class="img-placeholder" style="margin-top: 14px; min-height: 140px;">
+          [FiftyOne timeline view showing action-reaction event pairs in video]
+        </div>
+      </section>
+
+      <section>
+        <div class="chapter">
+          <h2>Annotating causal relationships</h2>
+          <span class="pill green">Curating for Causality</span>
+        </div>
+        <div class="grid2" style="font-size: 0.8em;">
+          <div class="card">
+            <h3>What to annotate</h3>
+            <ul style="font-size: 0.85em;">
+              <li><span class="accent">Trigger event:</span> what action initiated the chain?</li>
+              <li><span class="accent">Affected objects:</span> which entities respond?</li>
+              <li><span class="accent">Temporal span:</span> when does the effect begin and end?</li>
+              <li><span class="accent">Counterfactual:</span> what would happen without the action?</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>Schema enforcement</h3>
+            <ul style="font-size: 0.85em;">
+              <li>Predefined <span class="accent">causal categories</span> (not free text)</li>
+              <li>Temporal bounds must be within clip duration</li>
+              <li>Every trigger must link to at least one consequence</li>
+              <li>Cross-annotator agreement checks built in</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <div class="chapter">
+          <h2>Fine-tuning with targeted causal data</h2>
+          <span class="pill green">Curating for Causality</span>
+        </div>
+        <div class="diagram" style="font-size: 0.82em; margin-bottom: 14px;">
+          <div class="arrow-row">
+            <div class="node">Curate Causal Data<span class="tag">rare events</span></div>
+            <div class="arrow">→</div>
+            <div class="node">Annotate<span class="tag">causal labels</span></div>
+            <div class="arrow">→</div>
+            <div class="node">Fine-Tune<span class="tag">world model</span></div>
+            <div class="arrow">→</div>
+            <div class="node">Re-Validate<span class="tag">physics checks</span></div>
+          </div>
+        </div>
+        <table class="vx">
+          <thead><tr><th>Metric</th><th>Baseline</th><th>After Causal Fine-Tune</th></tr></thead>
+          <tbody>
+            <tr><td>Physics consistency (emergency brake)</td><td>69%</td><td class="accent"><strong>91%</strong></td></tr>
+            <tr><td>Action fidelity (turn commands)</td><td>74%</td><td class="accent"><strong>88%</strong></td></tr>
+            <tr><td>Object permanence score</td><td>81%</td><td class="accent"><strong>94%</strong></td></tr>
+            <tr><td>FVD (visual quality)</td><td>128</td><td>131 <span class="muted">(~same)</span></td></tr>
+          </tbody>
+        </table>
+        <p class="muted" style="font-size: 0.72em; margin-top: 14px;">
+          Targeted causal data dramatically improves <span class="accent">physical correctness</span> with minimal impact on visual quality.
+        </p>
+      </section>
+
+      <!-- ============================================================
+           SECTION 5 — COLLABORATIVE RED-TEAMING  (Slides 18–20)
+      ============================================================= -->
+      <section>
+        <div class="chapter">
+          <h2>Why red-team world models?</h2>
+          <span class="pill red">Collaborative Red-Teaming</span>
+        </div>
+        <div class="grid2">
+          <div class="kpi">
+            <p class="big"><span class="accent">73%</span></p>
+            <div class="label">of world model failures found by red-teaming were missed by automated metrics</div>
+          </div>
+          <div class="card" style="font-size: 0.78em;">
+            <h3>The case for adversarial probing</h3>
+            <ul>
+              <li>Automated metrics check <span class="accent">known</span> failure modes</li>
+              <li>Red-teaming discovers <span class="accent">unknown unknowns</span></li>
+              <li>Domain experts probe edge cases that benchmarks miss</li>
+              <li>Collaborative review builds shared understanding of model limits</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <div class="chapter">
+          <h2>Enterprise red-teaming workflows</h2>
+          <span class="pill red">Collaborative Red-Teaming</span>
+        </div>
+        <div class="diagram" style="font-size: 0.82em; margin-bottom: 14px;">
+          <div class="arrow-row">
+            <div class="node">Define Probes<span class="tag">scenarios</span></div>
+            <div class="arrow">→</div>
+            <div class="node">Generate<span class="tag">world model</span></div>
+            <div class="arrow">→</div>
+            <div class="node">Review<span class="tag">team</span></div>
+            <div class="arrow">→</div>
+            <div class="node">Tag Failures<span class="tag">FiftyOne</span></div>
+            <div class="arrow">→</div>
+            <div class="node">Retrain<span class="tag">targeted fix</span></div>
+          </div>
+        </div>
+        <div class="grid2" style="font-size: 0.78em;">
+          <div class="card">
+            <h3>Roles</h3>
+            <ul style="font-size: 0.85em;">
+              <li><span class="accent">Scenario designers:</span> craft adversarial inputs</li>
+              <li><span class="accent">Domain reviewers:</span> assess physical plausibility</li>
+              <li><span class="accent">ML engineers:</span> triage and prioritize fixes</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>Tooling requirements</h3>
+            <ul style="font-size: 0.85em;">
+              <li>Shared annotation workspace (not siloed notebooks)</li>
+              <li>Tagging and commenting on specific frames</li>
+              <li>Versioned failure sets tied to model checkpoints</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <div class="chapter">
+          <h2>Red-teaming in practice</h2>
+          <span class="pill red">Collaborative Red-Teaming</span>
+        </div>
+        <table class="vx">
+          <thead><tr><th>Probe Category</th><th>Example</th><th>Failure Rate</th><th>Severity</th></tr></thead>
+          <tbody>
+            <tr><td>Impossible physics</td><td>Car drives through wall</td><td class="accent">15%</td><td>Critical</td></tr>
+            <tr><td>Causal violation</td><td>Brake → car accelerates</td><td class="accent">9%</td><td>Critical</td></tr>
+            <tr><td>Object hallucination</td><td>Parked car disappears</td><td class="accent">22%</td><td>High</td></tr>
+            <tr><td>Temporal inconsistency</td><td>Day → night in 2 frames</td><td class="accent">7%</td><td>Medium</td></tr>
+            <tr><td>Action misalignment</td><td>"Turn right" → straight</td><td class="accent">11%</td><td>High</td></tr>
+          </tbody>
+        </table>
+        <div class="img-placeholder" style="margin-top: 14px; min-height: 140px;">
+          [FiftyOne App — red-team review session with tagged failure categories]
+        </div>
+      </section>
+
+      <!-- ============================================================
+           WRAP-UP  (Slides 21–22)
+      ============================================================= -->
+      <section>
+        <h2>Key takeaways</h2>
+        <div class="card">
+          <ol>
+            <li><span class="accent">World models need physics-aware validation</span> — FID and FVD are necessary but not sufficient</li>
+            <li><span class="accent">Scale demands smart tooling</span> — you can't review 10B frames manually; query, embed, and filter</li>
+            <li><span class="accent">Temporal drift is the silent killer</span> — always measure validation scores across the generation horizon</li>
+            <li><span class="accent">Causal data is the highest-leverage investment</span> — targeted rare-event curation beats more random data</li>
+            <li><span class="accent">Red-teaming finds what metrics miss</span> — collaborative adversarial review surfaces unknown failure modes</li>
+          </ol>
+        </div>
+      </section>
+
+      <section data-center="true" style="height: 100%;">
+        <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 70vh;">
+          <h1 style="color: #FF6D04; font-weight: bold; margin: 0 0 0.3em 0; font-size: 2.5em;">Q&amp;A</h1>
+          <p style="font-size: 1.4em; margin: 0 0 1em 0;">Thank you!</p>
+        </div>
+        <div class="grid2" style="max-width: 700px; margin: 0 auto;">
+          <div class="card" style="text-align: center;">
+            <h3>Slides &amp; Resources</h3>
+            <p class="muted mono" style="font-size: 0.7em;">github.com/nicklotz/world-model-validation-talk</p>
+            <div class="img-placeholder" style="min-height: 100px; margin-top: 8px;">
+              [QR code — repo link]
+            </div>
+          </div>
+          <div class="card" style="text-align: center;">
+            <h3>FiftyOne Docs</h3>
+            <p class="muted mono" style="font-size: 0.7em;">docs.voxel51.com</p>
+            <div class="img-placeholder" style="min-height: 100px; margin-top: 8px;">
+              [QR code — docs link]
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reveal.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js@5/plugin/notes/notes.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js@5/plugin/highlight/highlight.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js@5/plugin/math/math.js"></script>
+
+  <script>
+    Reveal.initialize({
+      hash: true,
+      slideNumber: true,
+      transition: "fade",
+      backgroundTransition: "fade",
+      center: false,
+
+      margin: 0.08,
+      minScale: 0.2,
+      maxScale: 2.0,
+
+      plugins: [ RevealNotes, RevealHighlight, RevealMath.KaTeX ],
+      pdfSeparateFragments: false,
+      viewDistance: 8
+    });
+
+    Reveal.on("ready", () => Reveal.layout());
+    window.addEventListener("resize", () => Reveal.layout());
+  </script>
+</body>
+</html>
