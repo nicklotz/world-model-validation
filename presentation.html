@@ -240,7 +240,7 @@
       ============================================================= -->
       <section>
         <h2>Agenda</h2>
-        <div class="card" style="font-size: 0.88em;">
+        <div class="card" style="font-size: 0.8em;">
           <ul>
             <li><span class="accent">The Landscape:</span> World models &amp; the validation crisis</li>
             <li><span class="accent">Taming the Data Monster:</span> Query, curate, and visualize at scale</li>
@@ -276,16 +276,16 @@
               <div class="label">invested in video generation &amp; world models (2024–2025)</div>
             </div>
             <div class="kpi" style="margin-top: 12px;">
-              <p class="big"><span class="accent">Sora → Cosmos → Genie 2</span></p>
+              <p class="big" style="font-size: 1.1em;"><span class="accent">Sora → Cosmos → Genie 2</span></p>
               <div class="label">major releases in under 18 months</div>
             </div>
           </div>
           <div>
-            <p style="font-size: 0.75em;">
+            <p style="font-size: 0.68em;">
               World models learn to <span class="accent">simulate</span> environments — predicting future frames given actions.
               They promise training embodied agents, AV simulation, and content creation.
             </p>
-            <p class="muted" style="font-size: 0.7em; margin-top: 10px;">
+            <p class="muted" style="font-size: 0.64em; margin-top: 8px;">
               But generating plausible-looking video is not the same as generating <em>physically correct</em> video.
               The gap between visual fidelity and physical fidelity is where validation matters.
             </p>
@@ -327,22 +327,22 @@
           <span class="pill orange">The Landscape</span>
         </div>
         <div class="grid2">
-          <div class="card">
+          <div class="card" style="font-size: 0.82em;">
             <h3>What we can measure today</h3>
-            <ul style="font-size: 0.75em;">
+            <ul style="font-size: 0.82em;">
               <li>FID / FVD — distributional similarity</li>
               <li>LPIPS — perceptual distance</li>
               <li>CLIP score — semantic alignment</li>
             </ul>
-            <p class="muted" style="font-size: 0.7em; margin-top: 8px;">
+            <p class="muted" style="font-size: 0.75em; margin-top: 6px;">
               These tell us the <em>look</em> is right. They say nothing about whether <span class="accent">physics</span> is right.
             </p>
           </div>
-          <div class="img-placeholder" style="min-height: 200px;">
+          <div class="img-placeholder" style="min-height: 140px;">
             [Side-by-side: visually plausible but physically wrong generation vs. ground truth]
           </div>
         </div>
-        <p class="muted" style="font-size: 0.72em; margin-top: 14px;">
+        <p class="muted" style="font-size: 0.65em; margin-top: 10px;">
           A car that floats through a wall scores well on FID. We need <span class="accent">task-specific, physics-aware</span> validation.
         </p>
       </section>
@@ -390,19 +390,16 @@
                 <tr><td>Embedding index</td><td>Semantic search without pixels</td></tr>
               </tbody>
             </table>
-            <pre style="margin-top: 12px;"><code class="language-python" style="font-size: 0.65em;">import fiftyone as fo
-
-# Query a remote dataset without downloading everything
+            <pre style="margin-top: 8px;"><code class="language-python" style="font-size: 0.58em;">import fiftyone as fo
 dataset = fo.load_dataset("av-fleet-2025")
 view = (dataset
     .match(F("weather") == "rain")
     .filter_labels("detections", F("label") == "pedestrian")
-    .limit(1000)
-)
+    .limit(1000))
 session = fo.launch_app(view)</code></pre>
           </div>
-          <div class="img-placeholder" style="min-height: 280px;">
-            [FiftyOne App showing filtered query results from large-scale video dataset]
+          <div class="img-placeholder" style="min-height: 200px;">
+            [FiftyOne App — filtered query results from large-scale video dataset]
           </div>
         </div>
       </section>
@@ -462,17 +459,17 @@ session = fo.launch_app(view)</code></pre>
           <h2>Detecting physics hallucinations</h2>
           <span class="pill purple">Validating World Models</span>
         </div>
-        <div class="card" style="font-size: 0.78em;">
+        <div class="card" style="font-size: 0.7em;">
           <h3>Detection strategies</h3>
           <ul>
             <li><span class="accent">Object tracking consistency:</span> Run a tracker on generated video — do detections match across frames?</li>
-            <li><span class="accent">Depth estimation checks:</span> Monocular depth on generated frames — do depth orderings stay consistent?</li>
+            <li><span class="accent">Depth estimation checks:</span> Monocular depth on generated frames — do orderings stay consistent?</li>
             <li><span class="accent">Collision geometry:</span> Extract 3D bounding boxes — do objects overlap impossibly?</li>
             <li><span class="accent">Motion magnitude:</span> Optical flow between frames — do velocities exceed physical limits?</li>
           </ul>
         </div>
-        <div class="img-placeholder" style="margin-top: 14px; min-height: 160px;">
-          [Generated video frame with overlaid physics violation heatmap — objects clipping through surfaces]
+        <div class="img-placeholder" style="margin-top: 8px; min-height: 80px;">
+          [Generated video frame with overlaid physics violation heatmap]
         </div>
       </section>
 
@@ -547,8 +544,8 @@ session = fo.launch_app(failures)</code></pre>
           <h2>Case study: AV scenario validation</h2>
           <span class="pill purple">Validating World Models</span>
         </div>
-        <table class="vx">
-          <thead><tr><th>Scenario</th><th>Tested</th><th>Physics Fail Rate</th><th>Key Issue</th></tr></thead>
+        <table class="vx" style="font-size: 0.72em;">
+          <thead><tr><th>Scenario</th><th>Tested</th><th>Fail Rate</th><th>Key Issue</th></tr></thead>
           <tbody>
             <tr><td>Lane change</td><td>2,400</td><td class="accent">12%</td><td>Adjacent vehicle clipping</td></tr>
             <tr><td>Unprotected left turn</td><td>1,800</td><td class="accent">23%</td><td>Oncoming car ignored</td></tr>
@@ -557,8 +554,8 @@ session = fo.launch_app(failures)</code></pre>
             <tr><td>Merge onto highway</td><td>1,600</td><td class="accent">18%</td><td>Speed inconsistency</td></tr>
           </tbody>
         </table>
-        <div class="img-placeholder" style="margin-top: 14px; min-height: 150px;">
-          [FiftyOne grid view showing tagged physics failures across AV scenario types]
+        <div class="img-placeholder" style="margin-top: 10px; min-height: 90px;">
+          [FiftyOne grid — tagged physics failures across AV scenarios]
         </div>
       </section>
 
@@ -572,14 +569,14 @@ session = fo.launch_app(failures)</code></pre>
         </div>
         <div class="grid2">
           <div class="kpi">
-            <p class="big"><span class="accent">1 in 10,000</span></p>
+            <p class="big"><span class="accent">1 in 10K</span></p>
             <div class="label">frames contain a meaningful causal interaction (e.g., swerve → near-miss)</div>
           </div>
-          <div class="card" style="font-size: 0.78em;">
+          <div class="card" style="font-size: 0.7em;">
             <h3>Why this matters for world models</h3>
             <ul>
               <li>Models trained on <span class="accent">common scenarios</span> hallucinate on rare ones</li>
-              <li>Rare events are exactly where <span class="accent">safety-critical failures</span> occur</li>
+              <li>Rare events = where <span class="accent">safety-critical failures</span> occur</li>
               <li>Random sampling almost never surfaces these cases</li>
               <li>You need <span class="accent">targeted curation</span> to build causal training data</li>
             </ul>
@@ -652,7 +649,7 @@ causal = dataset.match(
           <h2>Fine-tuning with targeted causal data</h2>
           <span class="pill green">Curating for Causality</span>
         </div>
-        <div class="diagram" style="font-size: 0.82em; margin-bottom: 14px;">
+        <div class="diagram" style="font-size: 0.78em; margin-bottom: 10px;">
           <div class="arrow-row">
             <div class="node">Curate Causal Data<span class="tag">rare events</span></div>
             <div class="arrow">→</div>
@@ -663,7 +660,7 @@ causal = dataset.match(
             <div class="node">Re-Validate<span class="tag">physics checks</span></div>
           </div>
         </div>
-        <table class="vx">
+        <table class="vx" style="font-size: 0.72em;">
           <thead><tr><th>Metric</th><th>Baseline</th><th>After Causal Fine-Tune</th></tr></thead>
           <tbody>
             <tr><td>Physics consistency (emergency brake)</td><td>69%</td><td class="accent"><strong>91%</strong></td></tr>
@@ -672,7 +669,7 @@ causal = dataset.match(
             <tr><td>FVD (visual quality)</td><td>128</td><td>131 <span class="muted">(~same)</span></td></tr>
           </tbody>
         </table>
-        <p class="muted" style="font-size: 0.72em; margin-top: 14px;">
+        <p class="muted" style="font-size: 0.65em; margin-top: 8px;">
           Targeted causal data dramatically improves <span class="accent">physical correctness</span> with minimal impact on visual quality.
         </p>
       </section>
@@ -690,13 +687,13 @@ causal = dataset.match(
             <p class="big"><span class="accent">73%</span></p>
             <div class="label">of world model failures found by red-teaming were missed by automated metrics</div>
           </div>
-          <div class="card" style="font-size: 0.78em;">
+          <div class="card" style="font-size: 0.7em;">
             <h3>The case for adversarial probing</h3>
             <ul>
               <li>Automated metrics check <span class="accent">known</span> failure modes</li>
               <li>Red-teaming discovers <span class="accent">unknown unknowns</span></li>
-              <li>Domain experts probe edge cases that benchmarks miss</li>
-              <li>Collaborative review builds shared understanding of model limits</li>
+              <li>Domain experts probe cases benchmarks miss</li>
+              <li>Collaborative review builds shared model understanding</li>
             </ul>
           </div>
         </div>
@@ -707,7 +704,7 @@ causal = dataset.match(
           <h2>Enterprise red-teaming workflows</h2>
           <span class="pill red">Collaborative Red-Teaming</span>
         </div>
-        <div class="diagram" style="font-size: 0.82em; margin-bottom: 14px;">
+        <div class="diagram" style="font-size: 0.78em; margin-bottom: 10px;">
           <div class="arrow-row">
             <div class="node">Define Probes<span class="tag">scenarios</span></div>
             <div class="arrow">→</div>
@@ -720,7 +717,7 @@ causal = dataset.match(
             <div class="node">Retrain<span class="tag">targeted fix</span></div>
           </div>
         </div>
-        <div class="grid2" style="font-size: 0.78em;">
+        <div class="grid2" style="font-size: 0.72em;">
           <div class="card">
             <h3>Roles</h3>
             <ul style="font-size: 0.85em;">
@@ -745,8 +742,8 @@ causal = dataset.match(
           <h2>Red-teaming in practice</h2>
           <span class="pill red">Collaborative Red-Teaming</span>
         </div>
-        <table class="vx">
-          <thead><tr><th>Probe Category</th><th>Example</th><th>Failure Rate</th><th>Severity</th></tr></thead>
+        <table class="vx" style="font-size: 0.68em;">
+          <thead><tr><th>Probe Category</th><th>Example</th><th>Fail %</th><th>Severity</th></tr></thead>
           <tbody>
             <tr><td>Impossible physics</td><td>Car drives through wall</td><td class="accent">15%</td><td>Critical</td></tr>
             <tr><td>Causal violation</td><td>Brake → car accelerates</td><td class="accent">9%</td><td>Critical</td></tr>
@@ -755,7 +752,7 @@ causal = dataset.match(
             <tr><td>Action misalignment</td><td>"Turn right" → straight</td><td class="accent">11%</td><td>High</td></tr>
           </tbody>
         </table>
-        <div class="img-placeholder" style="margin-top: 14px; min-height: 140px;">
+        <div class="img-placeholder" style="margin-top: 10px; min-height: 80px;">
           [FiftyOne App — red-team review session with tagged failure categories]
         </div>
       </section>
@@ -765,35 +762,35 @@ causal = dataset.match(
       ============================================================= -->
       <section>
         <h2>Key takeaways</h2>
-        <div class="card">
+        <div class="card" style="font-size: 0.78em;">
           <ol>
-            <li><span class="accent">World models need physics-aware validation</span> — FID and FVD are necessary but not sufficient</li>
-            <li><span class="accent">Scale demands smart tooling</span> — you can't review 10B frames manually; query, embed, and filter</li>
-            <li><span class="accent">Temporal drift is the silent killer</span> — always measure validation scores across the generation horizon</li>
-            <li><span class="accent">Causal data is the highest-leverage investment</span> — targeted rare-event curation beats more random data</li>
-            <li><span class="accent">Red-teaming finds what metrics miss</span> — collaborative adversarial review surfaces unknown failure modes</li>
+            <li><span class="accent">Physics-aware validation</span> — FID/FVD are necessary but not sufficient</li>
+            <li><span class="accent">Smart tooling at scale</span> — query, embed, and filter; don't review 10B frames manually</li>
+            <li><span class="accent">Temporal drift is the silent killer</span> — measure validation across the generation horizon</li>
+            <li><span class="accent">Causal data is highest-leverage</span> — targeted rare-event curation beats more random data</li>
+            <li><span class="accent">Red-teaming finds what metrics miss</span> — adversarial review surfaces unknown failure modes</li>
           </ol>
         </div>
       </section>
 
       <section data-center="true" style="height: 100%;">
-        <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 70vh;">
-          <h1 style="color: #FF6D04; font-weight: bold; margin: 0 0 0.3em 0; font-size: 2.5em;">Q&amp;A</h1>
-          <p style="font-size: 1.4em; margin: 0 0 1em 0;">Thank you!</p>
+        <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 28vh;">
+          <h1 style="color: #FF6D04; font-weight: bold; margin: 0 0 0.1em 0; font-size: 2.2em;">Q&amp;A</h1>
+          <p style="font-size: 1.2em; margin: 0;">Thank you!</p>
         </div>
-        <div class="grid2" style="max-width: 700px; margin: 0 auto;">
-          <div class="card" style="text-align: center;">
-            <h3>Slides &amp; Resources</h3>
-            <p class="muted mono" style="font-size: 0.7em;">github.com/nicklotz/world-model-validation-talk</p>
-            <div class="img-placeholder" style="min-height: 100px; margin-top: 8px;">
-              [QR code — repo link]
+        <div class="grid2" style="max-width: 560px; margin: 0 auto;">
+          <div class="card" style="text-align: center; padding: 10px;">
+            <h3 style="margin: 0 0 4px 0;">Slides &amp; Resources</h3>
+            <p class="muted mono" style="font-size: 0.55em; margin: 0;">github.com/nicklotz/world-model-validation-talk</p>
+            <div class="img-placeholder" style="min-height: 60px; margin-top: 4px; padding: 12px 8px;">
+              [QR code — repo]
             </div>
           </div>
-          <div class="card" style="text-align: center;">
-            <h3>FiftyOne Docs</h3>
-            <p class="muted mono" style="font-size: 0.7em;">docs.voxel51.com</p>
-            <div class="img-placeholder" style="min-height: 100px; margin-top: 8px;">
-              [QR code — docs link]
+          <div class="card" style="text-align: center; padding: 10px;">
+            <h3 style="margin: 0 0 4px 0;">FiftyOne Docs</h3>
+            <p class="muted mono" style="font-size: 0.55em; margin: 0;">docs.voxel51.com</p>
+            <div class="img-placeholder" style="min-height: 60px; margin-top: 4px; padding: 12px 8px;">
+              [QR code — docs]
             </div>
           </div>
         </div>
