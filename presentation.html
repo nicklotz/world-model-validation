@@ -221,18 +221,10 @@
         </h1>
 
         <p class="muted title-sub">
-          Strategies for validating <span class="accent">world models</span> and action-conditioned video.
           How do you debug a model that <em>imagines</em> the future?
         </p>
 
-        <div style="display: flex; justify-content: center; gap: 20px; width: 100%; margin-top: 16px;">
-          <div class="img-placeholder" style="width: 45%; min-height: 200px;">
-            [World model generation example — predicted video frame]
-          </div>
-          <div class="img-placeholder" style="width: 45%; min-height: 200px;">
-            [FiftyOne App — video validation dashboard]
-          </div>
-        </div>
+        <img src="assets/fiftyone-app-preview.png" alt="FiftyOne 3D + video validation" class="title-img" style="height: 360px !important; width: 90% !important; object-fit: cover;">
       </section>
 
       <!-- ============================================================
@@ -272,22 +264,20 @@
         <div class="grid2">
           <div>
             <div class="kpi">
-              <p class="big"><span class="accent">$4.5B+</span></p>
-              <div class="label">invested in video generation &amp; world models (2024–2025)</div>
+              <p class="big"><span class="accent">$3B+</span></p>
+              <div class="label">Runway valuation at Series D <span class="muted" style="font-size: 0.8em;">(Variety, Apr 2025)</span></div>
             </div>
             <div class="kpi" style="margin-top: 12px;">
-              <p class="big" style="font-size: 1.1em;"><span class="accent">Sora → Cosmos → Genie 2</span></p>
-              <div class="label">major releases in under 18 months</div>
+              <p class="big" style="font-size: 1.1em;"><span class="accent">20M hrs</span></p>
+              <div class="label">video used to train NVIDIA Cosmos <span class="muted" style="font-size: 0.8em;">(NVIDIA, Jan 2025)</span></div>
             </div>
           </div>
           <div>
             <p style="font-size: 0.68em;">
-              World models learn to <span class="accent">simulate</span> environments — predicting future frames given actions.
-              They promise training embodied agents, AV simulation, and content creation.
+              World models predict future video frames given actions. The use cases — AV sim, robotics, content — are real. The money is real.
             </p>
             <p class="muted" style="font-size: 0.64em; margin-top: 8px;">
-              But generating plausible-looking video is not the same as generating <em>physically correct</em> video.
-              The gap between visual fidelity and physical fidelity is where validation matters.
+              The problem: looking right and <em>being</em> right are different things. That gap is where validation lives.
             </p>
           </div>
         </div>
@@ -311,13 +301,10 @@
           </div>
         </div>
 
-        <div class="img-placeholder" style="margin-top: 16px; min-height: 180px;">
-          [Diagram: input frames + action → model → predicted video sequence]
-        </div>
+        <img src="assets/chart-pipeline.png" alt="Action-conditioned video generation pipeline" style="margin-top: 16px; width: 100%; max-height: 200px; object-fit: contain; border-radius: 8px;">
 
         <p class="muted" style="font-size: 0.7em; margin-top: 12px;">
-          Unlike unconditional video generation, these models are <span class="accent">steerable</span> — the action input
-          means predictions must respect causal physics, not just visual plausibility.
+          The action input makes this harder than vanilla video gen. "Turn left" has to <em>actually</em> turn left, and the physics have to follow.
         </p>
       </section>
 
@@ -338,12 +325,11 @@
               These tell us the <em>look</em> is right. They say nothing about whether <span class="accent">physics</span> is right.
             </p>
           </div>
-          <div class="img-placeholder" style="min-height: 140px;">
-            [Side-by-side: visually plausible but physically wrong generation vs. ground truth]
-          </div>
+          <img src="assets/confusion-matrix.png" alt="Model confusion matrix" style="width: 100%; max-height: 480px; object-fit: contain; border-radius: 6px;">
         </div>
         <p class="muted" style="font-size: 0.65em; margin-top: 10px;">
-          A car that floats through a wall scores well on FID. We need <span class="accent">task-specific, physics-aware</span> validation.
+          A car that floats through a wall scores fine on FID. On <span class="accent">PhyGenBench</span>, the best model scores <span class="accent">0.51</span> — halfway to perfect across 27 physical laws.
+          <span style="font-size: 0.85em;">(Meng et al., 2024)</span>
         </p>
       </section>
 
@@ -357,21 +343,20 @@
         </div>
         <div class="grid3">
           <div class="kpi">
-            <p class="big"><span class="accent">10B+</span></p>
-            <div class="label">frames in modern driving datasets</div>
+            <p class="big"><span class="accent">10<sup>8</sup></span></p>
+            <div class="label">video clips used for Cosmos pre-training <span class="muted" style="font-size: 0.8em;">(NVIDIA, 2025)</span></div>
           </div>
           <div class="kpi">
-            <p class="big"><span class="accent">100+ PB</span></p>
-            <div class="label">raw video across AV fleets</div>
+            <p class="big"><span class="accent">1:10K</span></p>
+            <div class="label">rarest-to-commonest class ratio in nuScenes <span class="muted" style="font-size: 0.8em;">(Caesar et al., 2020)</span></div>
           </div>
           <div class="kpi">
-            <p class="big"><span class="accent">&lt;0.01%</span></p>
-            <div class="label">of frames contain the rare events that matter most</div>
+            <p class="big"><span class="accent">~1/10<sup>6</sup> mi</span></p>
+            <div class="label">crash frequency in naturalistic driving <span class="muted" style="font-size: 0.8em;">(Liu &amp; Feng, Nature Comms 2024)</span></div>
           </div>
         </div>
         <p class="muted" style="font-size: 0.72em; margin-top: 16px;">
-          You can't validate what you can't find. The first challenge is <span class="accent">navigating</span> massive video
-          corpora to surface the scenarios that expose world model failures.
+          You can't validate what you can't find. Step one is navigating massive video corpora to surface the scenarios that actually matter.
         </p>
       </section>
 
@@ -382,25 +367,25 @@
         </div>
         <div class="grid2">
           <div>
-            <table class="vx" style="font-size: 0.78em;">
+            <table class="vx" style="font-size: 0.7em;">
               <thead><tr><th>Approach</th><th>Trade-off</th></tr></thead>
               <tbody>
-                <tr><td>Download &amp; index locally</td><td>Weeks of transfer, PB storage</td></tr>
+                <tr><td>Download locally</td><td>Weeks, PB storage</td></tr>
                 <tr><td>Cloud-native query</td><td>Query in place, stream slices</td></tr>
-                <tr><td>Embedding index</td><td>Semantic search without pixels</td></tr>
+                <tr><td>Embedding index</td><td>Semantic search, no pixels</td></tr>
               </tbody>
             </table>
-            <pre style="margin-top: 8px;"><code class="language-python" style="font-size: 0.58em;">import fiftyone as fo
+            <pre style="margin-top: 6px;"><code class="language-python" style="font-size: 0.5em;">import fiftyone as fo
+from fiftyone import ViewField as F
 dataset = fo.load_dataset("av-fleet-2025")
 view = (dataset
     .match(F("weather") == "rain")
-    .filter_labels("detections", F("label") == "pedestrian")
+    .filter_labels("detections",
+        F("label") == "pedestrian")
     .limit(1000))
 session = fo.launch_app(view)</code></pre>
           </div>
-          <div class="img-placeholder" style="min-height: 200px;">
-            [FiftyOne App — filtered query results from large-scale video dataset]
-          </div>
+          <img src="assets/fiftyone-2d-annotation.png" alt="FiftyOne annotation view" style="width: 100%; max-height: 360px; object-fit: contain; border-radius: 6px;">
         </div>
       </section>
 
@@ -410,28 +395,42 @@ session = fo.launch_app(view)</code></pre>
           <span class="pill blue">Taming the Data Monster</span>
         </div>
         <div class="grid2">
-          <div class="img-placeholder" style="min-height: 260px;">
-            [Embedding visualization — clusters of driving scenarios colored by scene type]
-          </div>
-          <div class="img-placeholder" style="min-height: 260px;">
-            [Zoomed embedding cluster — rare near-miss events highlighted]
-          </div>
+          <img src="assets/embeddings-visualization.png" alt="Dense embedding clusters" style="width: 100%; max-height: 280px; object-fit: contain; border-radius: 6px;">
+          <img src="assets/zcore-selection.jpg" alt="Embedding-based data selection" style="width: 100%; max-height: 280px; object-fit: contain; border-radius: 6px;">
         </div>
         <p class="muted" style="font-size: 0.72em; margin-top: 14px;">
-          Compute embeddings once, explore interactively forever. Embeddings turn video corpora into
-          <span class="accent">navigable maps</span> where failure-relevant scenarios cluster together.
+          Embed once, explore forever. Similar content clusters together — including similar failures. Lasso a cluster, find a bug category.
         </p>
       </section>
 
       <!-- ============================================================
-           SECTION 3 — VALIDATING WORLD MODELS  (Slides 9–13)
+           DEMO 1 — Signpost slide
+      ============================================================= -->
+      <section data-background-color="#1a1a2e">
+        <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 60vh;">
+          <span class="pill orange" style="font-size: 1em; margin-bottom: 16px;">Live Demo</span>
+          <h1 style="color: #FF6D04; margin: 0 0 0.2em 0; font-size: 2em; text-align: center;">
+            Demo 1: Embedding-Guided<br/>Failure Triage
+          </h1>
+          <p class="muted" style="font-size: 0.85em; max-width: 60ch; text-align: center; margin-top: 8px;">
+            Load video outputs, compute embeddings, find failure clusters<br/>
+            without watching a single video.
+          </p>
+          <p style="font-size: 0.65em; opacity: 0.5; margin-top: 24px;">
+            <code>demos/demo1_embedding_triage.ipynb</code> &nbsp;|&nbsp; ~5 min
+          </p>
+        </div>
+      </section>
+
+      <!-- ============================================================
+           SECTION 3 — VALIDATING WORLD MODELS  (Slides 10–14)
       ============================================================= -->
       <section>
         <div class="chapter">
           <h2>Beyond FID: what metrics miss</h2>
           <span class="pill purple">Validating World Models</span>
         </div>
-        <div class="grid2" style="font-size: 0.8em;">
+        <div class="grid2" style="font-size: 0.78em;">
           <div class="card">
             <h3>What appearance metrics measure</h3>
             <ul style="font-size: 0.85em;">
@@ -439,17 +438,18 @@ session = fo.launch_app(view)</code></pre>
               <li>Color distribution fidelity</li>
               <li>Semantic layout similarity</li>
             </ul>
-            <p class="muted" style="font-size: 0.8em; margin-top: 8px;">Good at: "does it look real?"</p>
+            <p class="muted" style="font-size: 0.8em; margin-top: 6px;">Answers: "does it look real?"</p>
           </div>
           <div class="card">
             <h3>What we actually need</h3>
             <ul style="font-size: 0.85em;">
-              <li><span class="accent">Object permanence</span> — do things persist correctly?</li>
-              <li><span class="accent">Gravity &amp; collisions</span> — do physics constraints hold?</li>
-              <li><span class="accent">Action fidelity</span> — does "turn left" actually turn left?</li>
-              <li><span class="accent">Temporal coherence</span> — do objects track consistently?</li>
+              <li><span class="accent">Object permanence</span> — things don't vanish</li>
+              <li><span class="accent">Gravity &amp; collisions</span> — physics works</li>
+              <li><span class="accent">Action fidelity</span> — "turn left" turns left</li>
+              <li><span class="accent">Temporal coherence</span> — objects track frame to frame</li>
             </ul>
-            <p class="muted" style="font-size: 0.8em; margin-top: 8px;">Good at: "does it <em>work</em> right?"</p>
+            <p class="muted" style="font-size: 0.8em; margin-top: 6px;">Answers: "does it <em>work</em> right?"</p>
+            <p class="muted" style="font-size: 0.7em; margin-top: 4px;">WorldScore: best video model <span class="accent">62.2</span> vs. 3D models ~72 <span style="font-size: 0.85em;">(Duan et al., ICCV 2025)</span></p>
           </div>
         </div>
       </section>
@@ -467,9 +467,6 @@ session = fo.launch_app(view)</code></pre>
             <li><span class="accent">Collision geometry:</span> Extract 3D bounding boxes — do objects overlap impossibly?</li>
             <li><span class="accent">Motion magnitude:</span> Optical flow between frames — do velocities exceed physical limits?</li>
           </ul>
-        </div>
-        <div class="img-placeholder" style="margin-top: 8px; min-height: 80px;">
-          [Generated video frame with overlaid physics violation heatmap]
         </div>
       </section>
 
@@ -490,17 +487,15 @@ session = fo.launch_app(view)</code></pre>
           </div>
         </div>
         <div class="grid2">
-          <div class="card" style="font-size: 0.75em;">
-            <h3>Measuring drift</h3>
-            <ul>
-              <li>Track <span class="accent">per-frame validation scores</span> over generation horizon</li>
-              <li>Plot physics violation rate vs. timestep</li>
-              <li>Identify the <span class="accent">drift horizon</span> — where does the model lose grounding?</li>
+          <div class="card" style="font-size: 0.68em;">
+            <h3 style="margin-top: 0;">Measuring drift</h3>
+            <ul style="margin-bottom: 0;">
+              <li>Most models limited to ~<span class="accent">5s</span> before errors compound <span class="muted" style="font-size: 0.85em;">(Henschel et al., CVPR '25)</span></li>
+              <li>Genie 2: <span class="accent">10–20s</span> consistent, up to 1 min <span class="muted" style="font-size: 0.85em;">(DeepMind, Dec '24)</span></li>
+              <li>Identify the <span class="accent">drift horizon</span> — where does grounding fail?</li>
             </ul>
           </div>
-          <div class="img-placeholder" style="min-height: 160px;">
-            [Chart: validation score degradation over generation timesteps (t=0 to t=50)]
-          </div>
+          <img src="assets/chart-drift.png" alt="Temporal drift — validation score degradation" style="width: 100%; max-height: 450px; object-fit: contain; border-radius: 8px;">
         </div>
       </section>
 
@@ -523,15 +518,14 @@ session = fo.launch_app(view)</code></pre>
           </div>
         </div>
         <pre><code class="language-python" style="font-size: 0.62em;">import fiftyone as fo
-import fiftyone.brain as fob
 
 # Load generated + ground-truth video pairs
 dataset = fo.Dataset.from_dir(dataset_dir, dataset_type=fo.types.VideoDirectory)
 
-# Run automated physics checks as custom fields
+# Run automated physics checks (your custom functions)
 for sample in dataset:
-    sample["physics_score"] = run_physics_validation(sample.filepath)
-    sample["drift_horizon"] = compute_drift_horizon(sample.filepath)
+    sample["physics_score"] = run_physics_validation(sample.filepath)  # your impl
+    sample["drift_horizon"] = compute_drift_horizon(sample.filepath)  # your impl
     sample.save()
 
 # Surface worst failures for human review
@@ -541,26 +535,46 @@ session = fo.launch_app(failures)</code></pre>
 
       <section>
         <div class="chapter">
-          <h2>Case study: AV scenario validation</h2>
+          <h2>Physics violations in frontier models</h2>
           <span class="pill purple">Validating World Models</span>
         </div>
-        <table class="vx" style="font-size: 0.72em;">
-          <thead><tr><th>Scenario</th><th>Tested</th><th>Fail Rate</th><th>Key Issue</th></tr></thead>
+        <table class="vx" style="font-size: 0.65em;">
+          <thead><tr><th>Violation</th><th>Example</th></tr></thead>
           <tbody>
-            <tr><td>Lane change</td><td>2,400</td><td class="accent">12%</td><td>Adjacent vehicle clipping</td></tr>
-            <tr><td>Unprotected left turn</td><td>1,800</td><td class="accent">23%</td><td>Oncoming car ignored</td></tr>
-            <tr><td>Pedestrian crossing</td><td>3,100</td><td class="accent">8%</td><td>Pedestrian teleportation</td></tr>
-            <tr><td>Emergency braking</td><td>950</td><td class="accent">31%</td><td>Rear vehicle passes through</td></tr>
-            <tr><td>Merge onto highway</td><td>1,600</td><td class="accent">18%</td><td>Speed inconsistency</td></tr>
+            <tr><td><span class="accent">Newton's Laws</span></td><td>Object accelerates without force</td></tr>
+            <tr><td><span class="accent">Mass Conservation</span></td><td>Object appears / disappears mid-scene</td></tr>
+            <tr><td><span class="accent">Penetration</span></td><td>Car passes through wall or vehicle</td></tr>
+            <tr><td><span class="accent">Gravity</span></td><td>Unsupported object floats in air</td></tr>
+            <tr><td><span class="accent">Fluid Dynamics</span></td><td>Water flows uphill or freezes wrong</td></tr>
           </tbody>
         </table>
-        <div class="img-placeholder" style="margin-top: 10px; min-height: 90px;">
-          [FiftyOne grid — tagged physics failures across AV scenarios]
+        <p class="muted" style="font-size: 0.58em; margin-top: 4px;">
+          WorldModelBench (Li et al., 2025): 14 frontier models, 350 prompts, 67K human labels.
+          I2V models score <span class="accent">lower</span> on physics adherence than T2V counterparts.
+        </p>
+      </section>
+
+      <!-- ============================================================
+           DEMO 2 — Signpost slide
+      ============================================================= -->
+      <section data-background-color="#1a1a2e">
+        <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 60vh;">
+          <span class="pill purple" style="font-size: 1em; margin-bottom: 16px;">Live Demo</span>
+          <h1 style="color: #FF6D04; margin: 0 0 0.2em 0; font-size: 2em; text-align: center;">
+            Demo 2: Temporal Forensics
+          </h1>
+          <p class="muted" style="font-size: 0.85em; max-width: 60ch; text-align: center; margin-top: 8px;">
+            VLM-powered video audit &mdash; detect what happens, when it starts,<br/>
+            when it stops. Find disagreements automatically.
+          </p>
+          <p style="font-size: 0.65em; opacity: 0.5; margin-top: 24px;">
+            <code>demos/demo2_temporal_forensics.ipynb</code> &nbsp;|&nbsp; ~5 min
+          </p>
         </div>
       </section>
 
       <!-- ============================================================
-           SECTION 4 — CURATING FOR CAUSALITY  (Slides 14–17)
+           SECTION 4 — CURATING FOR CAUSALITY  (Slides 16–19)
       ============================================================= -->
       <section>
         <div class="chapter">
@@ -569,16 +583,16 @@ session = fo.launch_app(failures)</code></pre>
         </div>
         <div class="grid2">
           <div class="kpi">
-            <p class="big"><span class="accent">1 in 10K</span></p>
-            <div class="label">frames contain a meaningful causal interaction (e.g., swerve → near-miss)</div>
+            <p class="big"><span class="accent">1 in 10<sup>6</sup> mi</span></p>
+            <div class="label">crash frequency in naturalistic driving — the "curse of rarity" <span class="muted" style="font-size: 0.8em;">(Liu &amp; Feng, Nature Comms 2024)</span></div>
           </div>
           <div class="card" style="font-size: 0.7em;">
-            <h3>Why this matters for world models</h3>
+            <h3>Why this matters</h3>
             <ul>
-              <li>Models trained on <span class="accent">common scenarios</span> hallucinate on rare ones</li>
-              <li>Rare events = where <span class="accent">safety-critical failures</span> occur</li>
-              <li>Random sampling almost never surfaces these cases</li>
-              <li>You need <span class="accent">targeted curation</span> to build causal training data</li>
+              <li>Models hallucinate on what they haven't seen enough of</li>
+              <li>Rare events are where <span class="accent">safety-critical failures</span> live</li>
+              <li>Random sampling won't find them</li>
+              <li><span class="accent">Targeted curation</span> is the only way</li>
             </ul>
           </div>
         </div>
@@ -603,17 +617,13 @@ session = fo.launch_app(failures)</code></pre>
             <pre><code class="language-python" style="font-size: 0.62em;">
 # Find braking events followed by
 # near-miss within 2 seconds
+from fiftyone import ViewField as F
 causal = dataset.match(
-  F("events").contains(
-    {"action": "hard_brake",
-     "consequence": "near_miss",
-     "delta_t": {"$lt": 2.0}}
-  )
+  (F("action_label") == "hard_brake") &
+  (F("consequence_label") == "near_miss") &
+  (F("delta_t") < 2.0)
 )</code></pre>
           </div>
-        </div>
-        <div class="img-placeholder" style="margin-top: 14px; min-height: 140px;">
-          [FiftyOne timeline view showing action-reaction event pairs in video]
         </div>
       </section>
 
@@ -660,22 +670,23 @@ causal = dataset.match(
             <div class="node">Re-Validate<span class="tag">physics checks</span></div>
           </div>
         </div>
-        <table class="vx" style="font-size: 0.72em;">
-          <thead><tr><th>Metric</th><th>Baseline</th><th>After Causal Fine-Tune</th></tr></thead>
+        <table class="vx" style="font-size: 0.68em;">
+          <thead><tr><th>Targeted Approach</th><th>Metric</th><th>Baseline</th><th>Improved</th></tr></thead>
           <tbody>
-            <tr><td>Physics consistency (emergency brake)</td><td>69%</td><td class="accent"><strong>91%</strong></td></tr>
-            <tr><td>Action fidelity (turn commands)</td><td>74%</td><td class="accent"><strong>88%</strong></td></tr>
-            <tr><td>Object permanence score</td><td>81%</td><td class="accent"><strong>94%</strong></td></tr>
-            <tr><td>FVD (visual quality)</td><td>128</td><td>131 <span class="muted">(~same)</span></td></tr>
+            <tr><td>First-frame conditioning</td><td>FID / FVD</td><td>25.0 / 105.1</td><td class="accent"><strong>11.2 / 55.7</strong></td></tr>
+            <tr><td>Camera-conditioned post-training</td><td>Pose estimation</td><td>4.4%</td><td class="accent"><strong>62.6%</strong></td></tr>
+            <tr><td>Physics-aware fine-tuning</td><td>Phys. commonsense</td><td>32.3%</td><td class="accent"><strong>40.1%</strong></td></tr>
           </tbody>
         </table>
-        <p class="muted" style="font-size: 0.65em; margin-top: 8px;">
-          Targeted causal data dramatically improves <span class="accent">physical correctness</span> with minimal impact on visual quality.
+        <p class="muted" style="font-size: 0.62em; margin-top: 8px;">
+          DriveDreamer-2: first-frame + structured scenario conditioning <span style="font-size: 0.85em;">(Zhao et al., AAAI 2025)</span> |
+          Cosmos: camera-conditioned post-training <span style="font-size: 0.85em;">(NVIDIA, 2025)</span> |
+          VideoREPA: physics-aware loss <span style="font-size: 0.85em;">(NeurIPS 2025)</span>
         </p>
       </section>
 
       <!-- ============================================================
-           SECTION 5 — COLLABORATIVE RED-TEAMING  (Slides 18–20)
+           SECTION 5 — COLLABORATIVE RED-TEAMING  (Slides 20–22)
       ============================================================= -->
       <section>
         <div class="chapter">
@@ -684,16 +695,16 @@ causal = dataset.match(
         </div>
         <div class="grid2">
           <div class="kpi">
-            <p class="big"><span class="accent">73%</span></p>
-            <div class="label">of world model failures found by red-teaming were missed by automated metrics</div>
+            <p class="big"><span class="accent">0.51</span></p>
+            <div class="label">best model's physical commonsense score on PhyGenBench — only halfway to perfect <span class="muted" style="font-size: 0.8em;">(Meng et al., 2024)</span></div>
           </div>
           <div class="card" style="font-size: 0.7em;">
-            <h3>The case for adversarial probing</h3>
-            <ul>
-              <li>Automated metrics check <span class="accent">known</span> failure modes</li>
-              <li>Red-teaming discovers <span class="accent">unknown unknowns</span></li>
-              <li>Domain experts probe cases benchmarks miss</li>
-              <li>Collaborative review builds shared model understanding</li>
+            <h3 style="margin-top: 0;">Why bother?</h3>
+            <ul style="font-size: 0.9em;">
+              <li>Automated metrics miss half the physics failures</li>
+              <li>Red-teaming finds the <span class="accent">unknown unknowns</span></li>
+              <li>Domain experts catch what FID/FVD never will</li>
+              <li>Shared review builds shared understanding</li>
             </ul>
           </div>
         </div>
@@ -727,11 +738,11 @@ causal = dataset.match(
             </ul>
           </div>
           <div class="card">
-            <h3>Tooling requirements</h3>
+            <h3>Tooling</h3>
             <ul style="font-size: 0.85em;">
-              <li>Shared annotation workspace (not siloed notebooks)</li>
-              <li>Tagging and commenting on specific frames</li>
-              <li>Versioned failure sets tied to model checkpoints</li>
+              <li>Shared workspace, not siloed notebooks</li>
+              <li>Tag and comment on specific frames</li>
+              <li>Version failure sets per model checkpoint</li>
             </ul>
           </div>
         </div>
@@ -742,33 +753,34 @@ causal = dataset.match(
           <h2>Red-teaming in practice</h2>
           <span class="pill red">Collaborative Red-Teaming</span>
         </div>
-        <table class="vx" style="font-size: 0.68em;">
-          <thead><tr><th>Probe Category</th><th>Example</th><th>Fail %</th><th>Severity</th></tr></thead>
+        <table class="vx" style="font-size: 0.65em;">
+          <thead><tr><th>Physics Probe</th><th>Example</th><th>Avg Fail</th><th>Range (14 models)</th></tr></thead>
           <tbody>
-            <tr><td>Impossible physics</td><td>Car drives through wall</td><td class="accent">15%</td><td>Critical</td></tr>
-            <tr><td>Causal violation</td><td>Brake → car accelerates</td><td class="accent">9%</td><td>Critical</td></tr>
-            <tr><td>Object hallucination</td><td>Parked car disappears</td><td class="accent">22%</td><td>High</td></tr>
-            <tr><td>Temporal inconsistency</td><td>Day → night in 2 frames</td><td class="accent">7%</td><td>Medium</td></tr>
-            <tr><td>Action misalignment</td><td>"Turn right" → straight</td><td class="accent">11%</td><td>High</td></tr>
+            <tr><td><span class="accent">Mass conservation</span></td><td>Object appears / disappears</td><td class="accent">43%</td><td>12–75%</td></tr>
+            <tr><td><span class="accent">Object penetration</span></td><td>Car passes through wall</td><td class="accent">24%</td><td>8–40%</td></tr>
+            <tr><td><span class="accent">Newton's Laws</span></td><td>Accelerates without force</td><td class="accent">10%</td><td>6–16%</td></tr>
+            <tr><td><span class="accent">Gravity</span></td><td>Unsupported object floats</td><td class="accent">6%</td><td>2–10%</td></tr>
+            <tr><td><span class="accent">Fluid dynamics</span></td><td>Water flows uphill</td><td class="accent">4%</td><td>1–8%</td></tr>
           </tbody>
         </table>
-        <div class="img-placeholder" style="margin-top: 10px; min-height: 80px;">
-          [FiftyOne App — red-team review session with tagged failure categories]
-        </div>
+        <p class="muted" style="font-size: 0.55em; margin-top: 4px;">
+          Failure rates = 1 &minus; per-category adherence score from WorldModelBench: 14 frontier models, 67K human labels <span style="font-size: 0.85em;">(Li et al., 2025)</span>.
+          Mass conservation is the #1 failure — objects routinely vanish mid-scene.
+        </p>
       </section>
 
       <!-- ============================================================
-           WRAP-UP  (Slides 21–22)
+           WRAP-UP  (Slides 23–24)
       ============================================================= -->
       <section>
         <h2>Key takeaways</h2>
         <div class="card" style="font-size: 0.78em;">
           <ol>
-            <li><span class="accent">Physics-aware validation</span> — FID/FVD are necessary but not sufficient</li>
-            <li><span class="accent">Smart tooling at scale</span> — query, embed, and filter; don't review 10B frames manually</li>
-            <li><span class="accent">Temporal drift is the silent killer</span> — measure validation across the generation horizon</li>
-            <li><span class="accent">Causal data is highest-leverage</span> — targeted rare-event curation beats more random data</li>
-            <li><span class="accent">Red-teaming finds what metrics miss</span> — adversarial review surfaces unknown failure modes</li>
+            <li><span class="accent">FID/FVD aren't enough.</span> You need physics-aware validation.</li>
+            <li><span class="accent">Don't watch 10B frames.</span> Embed, query, filter.</li>
+            <li><span class="accent">Drift kills you slowly.</span> Measure it across the generation horizon.</li>
+            <li><span class="accent">Rare events are highest-leverage.</span> Targeted curation beats more random data.</li>
+            <li><span class="accent">Metrics miss things. People don't.</span> Red-team your world models.</li>
           </ol>
         </div>
       </section>
@@ -781,17 +793,13 @@ causal = dataset.match(
         <div class="grid2" style="max-width: 560px; margin: 0 auto;">
           <div class="card" style="text-align: center; padding: 10px;">
             <h3 style="margin: 0 0 4px 0;">Slides &amp; Resources</h3>
-            <p class="muted mono" style="font-size: 0.55em; margin: 0;">github.com/nicklotz/world-model-validation-talk</p>
-            <div class="img-placeholder" style="min-height: 60px; margin-top: 4px; padding: 12px 8px;">
-              [QR code — repo]
-            </div>
+            <p class="muted mono" style="font-size: 0.55em; margin: 0;">github.com/nicklotz/world-model-validation</p>
+            <img src="assets/qr-repo.png" alt="QR code — repo" style="height: 80px; width: auto; margin-top: 4px;">
           </div>
           <div class="card" style="text-align: center; padding: 10px;">
             <h3 style="margin: 0 0 4px 0;">FiftyOne Docs</h3>
             <p class="muted mono" style="font-size: 0.55em; margin: 0;">docs.voxel51.com</p>
-            <div class="img-placeholder" style="min-height: 60px; margin-top: 4px; padding: 12px 8px;">
-              [QR code — docs]
-            </div>
+            <img src="assets/qr-docs.png" alt="QR code — docs" style="height: 80px; width: auto; margin-top: 4px;">
           </div>
         </div>
       </section>
@@ -802,7 +810,6 @@ causal = dataset.match(
   <script src="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reveal.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/reveal.js@5/plugin/notes/notes.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/reveal.js@5/plugin/highlight/highlight.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/reveal.js@5/plugin/math/math.js"></script>
 
   <script>
     Reveal.initialize({
@@ -816,7 +823,7 @@ causal = dataset.match(
       minScale: 0.2,
       maxScale: 2.0,
 
-      plugins: [ RevealNotes, RevealHighlight, RevealMath.KaTeX ],
+      plugins: [ RevealNotes, RevealHighlight ],
       pdfSeparateFragments: false,
       viewDistance: 8
     });
